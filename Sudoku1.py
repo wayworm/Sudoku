@@ -64,8 +64,6 @@ def Sudoku_Logic():
 
     h,v,subs = current_vals()
     vals = ["1","2","3","4","5","6","7","8","9"]
-    print(h[0])
-
 
     for row in h:
         hused = [None,'']
@@ -74,13 +72,13 @@ def Sudoku_Logic():
                 pass
             else:
                 print("invalid input")
-                return False
+                return 0
             if True not in [helement == i for i in hused]:
                 hused.append(helement)
             else:
                 print("failure, duplicates in horizontal")
                 print([str(helement) == i for i in vals])
-                return False
+                return 1
     print("horizonal rules not violated.")
 
    
@@ -91,18 +89,17 @@ def Sudoku_Logic():
                 pass
             else:
                 print("invalid input")
-                return False
+                return 0
             if True not in [velement == i for i in vused]:
                 vused.append(velement)
             else:
                 print([str(velement) == i for i in vals])
                 print("failure, duplicates in vertical")
-                return False
+                return 2
     print("column rules not violated.")
 
 
-    #THIS PART DOESN'T WORK
-    ################################################
+    #3x3 logic
     for sub in subs:
         sub_used = [None,'']
         for row in sub:
@@ -111,22 +108,23 @@ def Sudoku_Logic():
                     pass
                 else:
                     print("invalid input")
-                    return False
+                    return 0
 
                 if True not in [subh_element == i for i in sub_used]:
                     sub_used.append(subh_element)
                 else:
                     print("failure, duplicates in 3x3")
                     print([str(subh_element) == i for i in vals])
-                    return False
+                    return 3
 
         print("3x3 rules not violated.")
-    ########################################################
+
     return True
 
 
 def Result():
-    """ Returns message to user about if they completed the sudoku"""
+    """ Returns message to user about if they completed the sudoku
+    as well as hints as to what they've done wrong"""
 
     global text
     text.destroy()
@@ -135,9 +133,20 @@ def Result():
     if win == True:
         text = ttk.Label(text="You Win!")
         text.grid(column = 3, row = 4)
-
+    elif win == 0:
+        text = ttk.Label(text="You've used invalid characters, only use 1 - 9.")
+        text.grid(column = 3, row = 4)
+    elif win == 1:
+        text = ttk.Label(text="There's a mistake in one of your rows.")
+        text.grid(column = 3, row = 4)
+    elif win == 2:
+        text = ttk.Label(text="There's a mistake in one of your columns.")
+        text.grid(column = 3, row = 4)
+    elif win == 3:
+        text = ttk.Label(text="There's a mistake in one of your boxes.")
+        text.grid(column = 3, row = 4)
     else:
-        text = ttk.Label(text="Not Quite!")
+        text = ttk.Label(text="ERROR!")
         text.grid(column = 3, row = 4)
 
 
@@ -178,12 +187,8 @@ for i in range(len(x)):
         entries[i].append([])
         coords[i].append(random()) #My way of giving each entry box a unique linked variable thing
 
-        entr = ttk.Entry(frame, width=5,font=('Arial 24'),textvariable=coords[i][j])
+        entr = ttk.Entry(frame, width=5,font=('Arial 20'),textvariable=coords[i][j])
         entries[i][j].append([entr,x[i],y[j],0])
-
-
-
-
 
 
 
@@ -192,22 +197,45 @@ for i in range(len(x)):
 text = ttk.Label(text="SUDOKU", font=('Arial 24') )
 text.grid(column = 3, row = 0)
 
-text = ttk.Label(text="Submit",padding=15 )
-text.grid(column = 3, row = 14)
+
 
 #placing buttons
-button = ttk.Button(frame,text = "Check",padding=15, command=Result)
-button.grid(column = 4, row = 9)
+button1 = ttk.Button(frame,text = "Check",padding=10, command=Result)
+button1.grid(column = 12, row = 12,sticky="s", columnspan=3 )
 
-button = ttk.Button(frame,text = "Quit", command=Quit)
-button.grid(column = 4, row = 15)
+button2 = ttk.Button(frame,text = "Quit", command=Quit)
+button2.grid(column = 13, row = 13)
 
-button = ttk.Button(frame,text = "Vals", command=current_vals)
-button.grid(column = 4, row = 15)
+# Button for debugging/developing the curernt_vals function
+# button = ttk.Button(frame,text = "Vals", command=current_vals)
+# button.grid(column = 13, row = 14)
+
+
+
+# THIS TIMER DOESN'T WORK
+# import time
+# def timer():
+#     global elapsed_time
+#     now = time.time()
+#     elapsed_time =  str((time.time() - now))
+#     text = "Time Elapsed: " + str((time.time() - now))
+#     timer_var.set(text)
+#     root.after(2000, timer)
+
+# timer_var= tk.StringVar()
+
+# Timer = ttk.Label(text= timer_var,padding=15 )
+# Timer.grid(column = 3, row = 14)
+##########################
+
+submit = ttk.Label(text="Submit",padding=15 )
+submit.grid(column = 3, row = 15)
+
 
 #Placing entry boxes
 for i in range(len(x)):
     for j in range(len(y)):
         entries[i][j][0][0].grid(row = entries[i][j][0][1], column = entries[i][j][0][2])
 
+#root.after(1000, timer)
 root.mainloop()
