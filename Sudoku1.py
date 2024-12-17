@@ -77,7 +77,7 @@ for i in range(len(x)):
 
 def Sudoku_Logic():
     h,v,subs = current_vals()
-
+    vals = ["1","2","3","4","5","6","7","8","9"]
     print(h[0])
     row_sum = 0
     column_sum = 0
@@ -85,34 +85,60 @@ def Sudoku_Logic():
     #THIS PART DOESN'T WORK
     ################################################
     for row in h:
-        for element in row:
-            print(type(element))
-            if type(element) == int:
-                row_sum += element
-        if row_sum != 45:
-            print("failure, horizonal wrong",row_sum)
-            return False
-        row_sum = 0
+        hused = [None,'']
+        for helement in row:
+            if True in [helement == i for i in vals] :
+                pass
+            else:
+                print("invalid input")
+                return False
+            if True not in [helement == i for i in hused]:
+                hused.append(helement)
+            else:
+                print("failure, duplicates in horizontal")
+                print([str(helement) == i for i in vals])
+                return False
+    print("horizonal rules not violated.")
 
+   
     for column in v:
-        for element in column:
-            if type(element) == int:
-                column_sum += element
-        if column_sum != 45:
-            print("failure, vert wrong",column_sum)
-            return False
-        column_sum = 0
+        vused = [None]
+        for velement in column:
+            if True in [velement == i for i in vals] :
+                pass
+            else:
+                print("invalid input")
+                return False
+            if True not in [velement == i for i in vused]:
+                vused.append(velement)
+            else:
+                print([str(velement) == i for i in vals])
+                print("failure, duplicates in vertical")
+                return False
+    print("column rules not violated.")
 
-    for sub in subs:
-        for row in sub:
-            for element in sub:
-                if type(element) == int:
-                    sub_sum += element
+
+
+
+    # for column in v:
+    #     for element in column:
+    #         if type(element) == int:
+    #             column_sum += element
+    #     if column_sum != 45:
+    #         print("failure, vert wrong",column_sum)
+    #         return False
+    #     column_sum = 0
+
+    # for sub in subs:
+    #     for row in sub:
+    #         for element in sub:
+    #             if type(element) == int:
+    #                 sub_sum += element
     
-    if sub_sum != 45:
-        print("failure, matrix wrong",sub_sum)
-        return False
-    sub_sum = 0
+    # if sub_sum != 45:
+    #     print("failure, matrix wrong",sub_sum)
+    #     return False
+    # sub_sum = 0
     ########################################################
     return True
 
