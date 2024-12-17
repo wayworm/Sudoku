@@ -101,9 +101,20 @@ def current_vals():
             entries[i][j][0][3] = entries[i][j][0][0].get()
             final_vals2.append(entries[i][j][0][0].get())
 
-    reshaped = np.array(final_vals2).reshape((9,9))
-    print(reshaped)
-    return final_vals2
+    reshaped_horizonal = np.array(final_vals2).reshape((9,9))
+    reshaped_vertical = reshaped_horizonal.transpose()
+
+
+    print(reshaped_horizonal)
+    print("\n\n\n\n\n")
+    print(reshaped_vertical)
+    print("\n\n\n\n\n")
+
+
+    
+    submatrix = np.array([row[:3] for row in reshaped_horizonal[:3]])
+    print(submatrix)
+    return reshaped_horizonal , reshaped_vertical
 
 button = ttk.Button(frame,text = "Vals", command=current_vals)
 button.grid(column = 4, row = 15)
