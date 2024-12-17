@@ -16,6 +16,113 @@ from tkinter import ttk
 from random import random
 
 
+def current_vals():
+    """"
+    This is extracting the values entered into the entry boxes.
+    Returns a numpy array of 3 elements.
+    1st element is an array of the rows of the sudoku.
+    2nd element is an array of the columns of the sudoku
+    3rd element is an array of the 3x3 boxes in our sudoku 
+    ( these boxes are an array of 3 rows of len 3)
+    """
+    global entries
+    final_vals2 = []
+    for i in range(0,gridwidth):
+        for j in range(0,gridwidth):
+            entries[i][j][0][3] = entries[i][j][0][0].get()
+            final_vals2.append(entries[i][j][0][0].get())
+
+    reshaped_horizonal = np.array(final_vals2).reshape((9,9))
+    reshaped_vertical = reshaped_horizonal.transpose()
+
+    starts = [0,3,6,9]
+    submatrices = []
+
+    for i in range(0,3):
+        for j in range(0,3):
+            h_left = starts[i]
+            h_right = starts[i+1]
+
+            v_left = starts[j]
+            v_right = starts[j+1]
+
+            submatrices.append(np.array([row[h_left:h_right] for row in reshaped_horizonal[v_left:v_right]]))
+
+    return [reshaped_horizonal , reshaped_vertical, submatrices]
+
+
+def Sudoku_Logic():
+    """
+    Checks if the entries satisfies the rules of sudoku,
+    outputs whether we have a valid sudoku.
+
+    Rules:
+    - All integers 1 - 9 should appear in each row once
+    - All integers 1 - 9 should appear in each column once
+    - All integers 1 - 9 should appear in each submatrix once
+    """
+
+    h,v,subs = current_vals()
+    vals = ["1","2","3","4","5","6","7","8","9"]
+    print(h[0])
+
+
+    for row in h:
+        hused = [None,'']
+        for helement in row:
+            if True in [helement == i for i in vals] :
+                pass
+            else:
+                print("invalid input")
+                return False
+            if True not in [helement == i for i in hused]:
+                hused.append(helement)
+            else:
+                print("failure, duplicates in horizontal")
+                print([str(helement) == i for i in vals])
+                return False
+    print("horizonal rules not violated.")
+
+   
+    for column in v:
+        vused = [None]
+        for velement in column:
+            if True in [velement == i for i in vals] :
+                pass
+            else:
+                print("invalid input")
+                return False
+            if True not in [velement == i for i in vused]:
+                vused.append(velement)
+            else:
+                print([str(velement) == i for i in vals])
+                print("failure, duplicates in vertical")
+                return False
+    print("column rules not violated.")
+
+
+    #THIS PART DOESN'T WORK
+    ################################################
+    for sub in subs:
+        sub_used = [None,'']
+        for row in sub:
+            for subh_element in row:
+                if True in [subh_element == i for i in vals] :
+                    pass
+                else:
+                    print("invalid input")
+                    return False
+
+                if True not in [subh_element == i for i in sub_used]:
+                    sub_used.append(subh_element)
+                else:
+                    print("failure, duplicates in 3x3")
+                    print([str(subh_element) == i for i in vals])
+                    return False
+
+        print("3x3 rules not violated.")
+    ########################################################
+    return True
 
 
 def Result():
@@ -75,106 +182,10 @@ for i in range(len(x)):
         entries[i][j].append([entr,x[i],y[j],0])
 
 
-def Sudoku_Logic():
-    h,v,subs = current_vals()
-    vals = ["1","2","3","4","5","6","7","8","9"]
-    print(h[0])
-    row_sum = 0
-    column_sum = 0
-    sub_sum = 0
-    #THIS PART DOESN'T WORK
-    ################################################
-    for row in h:
-        hused = [None,'']
-        for helement in row:
-            if True in [helement == i for i in vals] :
-                pass
-            else:
-                print("invalid input")
-                return False
-            if True not in [helement == i for i in hused]:
-                hused.append(helement)
-            else:
-                print("failure, duplicates in horizontal")
-                print([str(helement) == i for i in vals])
-                return False
-    print("horizonal rules not violated.")
-
-   
-    for column in v:
-        vused = [None]
-        for velement in column:
-            if True in [velement == i for i in vals] :
-                pass
-            else:
-                print("invalid input")
-                return False
-            if True not in [velement == i for i in vused]:
-                vused.append(velement)
-            else:
-                print([str(velement) == i for i in vals])
-                print("failure, duplicates in vertical")
-                return False
-    print("column rules not violated.")
 
 
 
 
-    # for column in v:
-    #     for element in column:
-    #         if type(element) == int:
-    #             column_sum += element
-    #     if column_sum != 45:
-    #         print("failure, vert wrong",column_sum)
-    #         return False
-    #     column_sum = 0
-
-    # for sub in subs:
-    #     for row in sub:
-    #         for element in sub:
-    #             if type(element) == int:
-    #                 sub_sum += element
-    
-    # if sub_sum != 45:
-    #     print("failure, matrix wrong",sub_sum)
-    #     return False
-    # sub_sum = 0
-    ########################################################
-    return True
-
-
-
-
-def current_vals():
-    """"
-    Function that will eventually be part of sudoku logic.
-    This is extracting the values entered into the entry boxes.
-    Gives raw data.
-    """
-    global entries
-    final_vals2 = []
-    for i in range(0,gridwidth):
-        for j in range(0,gridwidth):
-            entries[i][j][0][3] = entries[i][j][0][0].get()
-            final_vals2.append(entries[i][j][0][0].get())
-
-    reshaped_horizonal = np.array(final_vals2).reshape((9,9))
-    reshaped_vertical = reshaped_horizonal.transpose()
-
-    starts = [0,3,6,9]
-    submatrices = []
-
-    for i in range(0,3):
-        for j in range(0,3):
-            h_left = starts[i]
-            h_right = starts[i+1]
-
-            v_left = starts[j]
-            v_right = starts[j+1]
-
-            submatrices.append(np.array([row[h_left:h_right] for row in reshaped_horizonal[v_left:v_right]]))
-
-    return [reshaped_horizonal , reshaped_vertical, submatrices]
 
 
 #placing labels
